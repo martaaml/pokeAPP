@@ -4,24 +4,29 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
 import { RutasPrivadas } from './RutasPrivadas'
+import {Login} from './Login'
+
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
     <BrowserRouter>
-    <Link to="/">Home</Link>
-    <Route element={<RutasPrivadas/>}>
-    <Link to="/pokemon">Pokemon</Link>
-    </Route>
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/pokemon">Pokemon</Link>
+      <Link to="/login">Login</Link>
+    </nav>
+    
     <Routes>
-    <Route exact path="/" element={<Home/>} />
-    <Route exact path="/Login" element={<Login/>} />
-    <Route exact path="/pokemon" element={<Pokemon/>} />
+      <Route path="/Login" element={<Login />} />
+      
+      {/* Rutas privadas */}
+      <Route element={<RutasPrivadas />}>
+      
+      </Route>
     </Routes>
-    </BrowserRouter>
-    </>
+  </BrowserRouter>
   )
 }
 
