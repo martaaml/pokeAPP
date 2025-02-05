@@ -16,7 +16,8 @@ function App() {
     <Link to="/pokemon">Pokemon</Link>
     </Route>
     <Routes>
-    <Route exact path="/" element={<Login/>} />
+    <Route exact path="/" element={<Home/>} />
+    <Route exact path="/Login" element={<Login/>} />
     <Route exact path="/pokemon" element={<Pokemon/>} />
     </Routes>
     </BrowserRouter>

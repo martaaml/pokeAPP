@@ -1,16 +1,20 @@
 import { Navigate, Outlet } from 'react-router-dom'
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useState } from 'react'
+
+
 export function RutasPrivadas() {
-    let user = false;// Aqui añadiremos la logica de autenticación
+    let [usuario, setUsuario] = useState(null)
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            user = user.uid;
+           setUsuario(<Outlet />)
             console.log(user)
         }else{
-        console.log("no autenticado")
+       setUsuario(<Navigate to="/Login" />)
         }
     });
     return (
-        auth? <Outlet /> : <Navigate to="/" />
+     usuario
     )
 }
