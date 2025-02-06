@@ -21,6 +21,9 @@ body {
   background-color: hsl(307, 92%, 80%);
   color: white;
 }
+button{
+  background-color:transparent;
+}
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
