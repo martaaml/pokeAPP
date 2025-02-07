@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, orderBy, query } from 'firebase/firestore';
+import { db } from "../../firebase.js";  // Asegúrate de usar el nombre correcto
+
 import './Play.css';
 
 const API_URL = "https://pokeapi.co/api/v2/pokemon/";
@@ -11,11 +13,11 @@ const PokCrieAdivinanza = () => {
     const [score, setScore] = useState(0);
     const [message, setMessage] = useState("");
     const [ranking, setRanking] = useState([]);
-    const [showModal, setShowModal] = useState(false);  // Estado para mostrar el modal
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         getRandomPokemon();
-        fetchRanking(); // Cargar el ranking desde Firebase
+        fetchRanking();
     }, []);
 
     const getRandomPokemon = async () => {
@@ -59,7 +61,7 @@ const PokCrieAdivinanza = () => {
 
     const checkAnswer = (selectedName) => {
         if (selectedName === currentPokemon.name) {
-            setScore(score + 1);
+            setScore(prevScore => prevScore + 1);
             setMessage("¡Correcto! Has adivinado el Pokémon.");
             setTimeout(getRandomPokemon, 1000);
         } else {
@@ -71,41 +73,51 @@ const PokCrieAdivinanza = () => {
             } else {
                 setMessage(`¡Perdiste! El Pokémon era ${currentPokemon.name}. Puntuación final: ${score}`);
                 saveScoreToDatabase(score);
-                showGameOverModal(); // Aquí activamos el modal
+                showGameOverModal();
             }
         }
     };
 
     const fetchRanking = async () => {
-        const rankingRef = collection(db, "ranking");
-        const q = query(rankingRef, orderBy("score", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        const rankingData = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+        try {
+            const rankingRef = collection(db, "ranking");
+            const q = query(rankingRef, orderBy("score", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            const rankingData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
-        setRanking(rankingData);
+            setRanking(rankingData);
+        } catch (error) {
+            console.error("Error al obtener el ranking:", error);
+        }
     };
 
     const saveScoreToDatabase = async (finalScore) => {
-        await addDoc(collection(db, "ranking"), {
-            name: "Jugador",
-            score: finalScore,
-            timestamp: new Date()
-        });
-        fetchRanking(); // Actualizar ranking en pantalla
+        if (finalScore > 0) { // Evita guardar puntuaciones de 0
+            try {
+                await addDoc(collection(db, "ranking"), {
+                    name: "Jugador",
+                    score: finalScore,
+                    timestamp: new Date()
+                });
+                fetchRanking(); 
+            } catch (error) {
+                console.error("Error al guardar el score:", error);
+            }
+        }
     };
 
     const showGameOverModal = () => {
-        setShowModal(true);  // Activamos el modal
+        setShowModal(true);
     };
 
     const resetGame = () => {
         setLives(3);
         setScore(0);
-        setShowModal(false);  // Ocultamos el modal
+        setShowModal(false);
         getRandomPokemon();
     };
 
@@ -138,11 +150,15 @@ const PokCrieAdivinanza = () => {
             <div className="ranking-container">
                 <h2>🏆 Ranking de Puntuaciones</h2>
                 <ul className="ranking-list">
-                    {ranking.map((player, index) => (
-                        <li key={player.id} className="ranking-item">
-                            {index + 1}. {player.name} - {player.score} puntos
-                        </li>
-                    ))}
+                    {ranking.length > 0 ? (
+                        ranking.map((player, index) => (
+                            <li key={player.id} className="ranking-item">
+                                {index + 1}. {player.name} - {player.score} puntos
+                            </li>
+                        ))
+                    ) : (
+                        <p>No hay puntuaciones aún.</p>
+                    )}
                 </ul>
             </div>
 

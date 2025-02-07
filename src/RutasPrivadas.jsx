@@ -1,22 +1,29 @@
-import { Navigate, Outlet } from 'react-router-dom'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useState } from 'react'
-
+import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Navigate, Outlet } from 'react-router-dom';
 
 export function RutasPrivadas() {
-    let [usuario, setUsuario] = useState(null)
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+  const [usuario, setUsuario] = useState(null);
+  const auth = getAuth();
 
-        if (user) {
-            setUsuario(<Outlet />)
-            setUsuario(<Navigate to="/play" />)
-            console.log(user)
-        } else {
-            setUsuario(<Navigate to="/Login" />)
-        }
+  useEffect(() => {
+    // Agregar el listener de autenticación
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUsuario(true); // Usuario autenticado
+      } else {
+        setUsuario(false); // Usuario no autenticado
+      }
     });
-    return (
-        usuario
-    )
+
+    // Limpiar el listener cuando el componente se desmonte
+    return () => unsubscribe();
+  }, [auth]);
+
+  if (usuario === null) {
+    // Mientras no se sepa si el usuario está autenticado o no, no renderizar nada (por ejemplo, se puede mostrar un cargando)
+    return <div>Loading...</div>;
+  }
+
+  return usuario ? <Outlet /> : <Navigate to="/login" />;
 }

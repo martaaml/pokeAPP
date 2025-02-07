@@ -10,9 +10,9 @@
     align-items: center;
     text-align: center;
     color: rgb(162, 73, 73);
-    padding: 20px; 
-    box-sizing: border-box; 
-    position: relative;
+    padding: 20px; /* Agregado un pequeño padding para que no quede tan pegado al borde */
+    box-sizing: border-box; /* Asegura que el padding no se "coma" el espacio */
+    position: relative; /* Asegura que el contenido se pueda superponer sobre el fondo si es necesario */
   }
   
   /* Añadir un sombreado sutil al texto */
@@ -24,4 +24,12 @@
   h1 {
     font-size: 3em;
     margin-bottom: 20px;
-    }
+    animation: fadeIn 1s ease-out; /* Agregar animación de entrada */
+  }
+  
+  /* Ajustar el tamaño del párrafo */
+  p {
+    font-size: 1.5em;
+    animation: fadeIn 1.5s ease-out; /* Animación del párrafo también */
+  }
+

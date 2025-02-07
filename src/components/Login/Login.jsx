@@ -10,19 +10,19 @@ import {
 } from 'firebase/auth';
 import { app } from '../../firebase';
 
-
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false); // Estado para alternar entre login y registro
   const [isModalOpen, setIsModalOpen] = useState(true); // Estado para abrir/cerrar el modal
+  const [error, setError] = useState(''); // Estado para mostrar errores
   const navigate = useNavigate();
   const auth = getAuth(app);
 
   // Función de inicio de sesión
   const handleLogin = () => {
     if (!email || !password) {
-      alert('Por favor ingresa un correo electrónico y una contraseña.');
+      setError('Por favor ingresa un correo electrónico y una contraseña.');
       return;
     }
     signInWithEmailAndPassword(auth, email, password)
@@ -30,16 +30,15 @@ export function Login() {
         navigate('/pokedex');
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(`Error: ${errorCode} - ${errorMessage}`);
+        console.error("Error durante el inicio de sesión:", error);
+        setError(`Error al iniciar sesión: ${error.message || 'Por favor verifica tus credenciales'}`);
       });
   };
 
   // Función de registro
   const handleRegister = () => {
     if (!email || !password) {
-      alert('Por favor ingresa un correo electrónico y una contraseña.');
+      setError('Por favor ingresa un correo electrónico y una contraseña.');
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
@@ -47,9 +46,8 @@ export function Login() {
         navigate('/pokedex');
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(`Error: ${errorCode} - ${errorMessage}`);
+        console.error("Error durante el registro:", error);
+        setError(`Error al registrarse: ${error.message || 'Por favor verifica los datos ingresados'}`);
       });
   };
 
@@ -60,7 +58,8 @@ export function Login() {
         navigate('/pokedex');
       })
       .catch((error) => {
-        console.error("Error con Google:", error.message);
+        console.error("Error durante inicio de sesión con Google:", error);
+        setError(`Error con Google: ${error.message || 'Asegúrate de que el acceso esté habilitado'}`);
       });
   };
 
@@ -71,7 +70,8 @@ export function Login() {
         navigate('/pokedex');
       })
       .catch((error) => {
-        console.error("Error con Facebook:", error.message);
+        console.error("Error durante inicio de sesión con Facebook:", error);
+        setError(`Error con Facebook: ${error.message || 'Asegúrate de que el acceso esté habilitado'}`);
       });
   };
 
@@ -97,6 +97,9 @@ export function Login() {
 
           {/* CUERPO DEL MODAL */}
           <div className="modal-body">
+            {/* Mostrar errores */}
+            {error && <div className="alert alert-danger">{error}</div>}
+
             {/* CONTROLES DE LOGIN/REGISTRO */}
             <div className="d-flex justify-content-around border-bottom pb-2 mb-3">
               <button 

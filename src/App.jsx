@@ -7,6 +7,7 @@ import Pokedex from './components/Pokedex/Pokedex';
 import Error from './components/Error/Error';
 import Detalle from './components/Detalle/Detalle';
 import Landing from './components/Landing/Landing';  
+
 function App() {
   return (
     <BrowserRouter>
@@ -20,14 +21,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} /> 
         <Route path="/login" element={<Login />} />
-        <Route path="/play" element={<PokemonHangman />} />
+        
+        {/* Ruta protegida */}
+        <Route element={<RutasPrivadas />}>
+          <Route path="/play" element={<PokemonHangman />} />
+        </Route>
+
         <Route path="/pokedex" element={<Pokedex />} /> 
         <Route path="/error" element={<Error />} />
         <Route path="/detalle/:id" element={<Detalle />} />
- 
-        {/* Rutas privadas */}
-        <Route element={<RutasPrivadas />}>
-        </Route>
       </Routes>
     </BrowserRouter>
   );
