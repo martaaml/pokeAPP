@@ -1,0 +1,27 @@
+.landing-container {
+    background-color: aliceblue;
+    background-image: url('../src/assets/images/fondoLanding.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: rgb(162, 73, 73);
+    padding: 20px; 
+    box-sizing: border-box; 
+    position: relative;
+  }
+  
+  /* Añadir un sombreado sutil al texto */
+  h1, p {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Añade sombra sutil al texto */
+  }
+  
+  /* Ajustar el tamaño del título */
+  h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    }

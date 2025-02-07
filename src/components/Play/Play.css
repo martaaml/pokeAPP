@@ -1,0 +1,150 @@
+.pokemon-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    color: #ff00c8;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.score {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sound-button {
+    margin-bottom: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.sound-button:hover {
+    background-color: #45a049;
+}
+
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+
+/*Card de la opción de Pokemon*/
+.pokemon-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8f8f8;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.pokemon-option:hover {
+    transform: scale(1.1);
+}
+
+.pokemon-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color:aqua
+}
+
+.pokemon-image {
+    width: 100px;
+    height: 100px;
+}
+
+.lives {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #d900ff;
+    text-align: center;
+    /*Barrita de la vida*/
+    border-top: 2px solid #ff4500;
+    padding-top: 10px;
+    margin-top: 10px;
+
+}
+
+.message {
+    font-weight: bold;
+    font-size: 16px;
+    color: red;
+    margin-top: 10px;
+}
+
+.ranking-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid #333;
+    background: #f1f1f1;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.ranking-list {
+    list-style: none;
+    padding: 0;
+}
+
+.ranking-item {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.ranking-item:last-child {
+    border-bottom: none;
+}
+
+/* Estilos para el modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);  /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;  /* Asegura que el modal esté por encima de otros elementos */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 250px;
+}
+
+.restart-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.restart-button:hover {
+    background-color: #45a049;
+}
+

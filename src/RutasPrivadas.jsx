@@ -7,14 +7,16 @@ export function RutasPrivadas() {
     let [usuario, setUsuario] = useState(null)
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
+
         if (user) {
-           setUsuario(<Outlet />)
+            setUsuario(<Outlet />)
+            setUsuario(<Navigate to="/play" />)
             console.log(user)
-        }else{
-       setUsuario(<Navigate to="/Login" />)
+        } else {
+            setUsuario(<Navigate to="/Login" />)
         }
     });
     return (
-     usuario
+        usuario
     )
 }

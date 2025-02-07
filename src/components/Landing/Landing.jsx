@@ -1,13 +1,14 @@
-import React from 'react'
-import './Landing.css'
-import { Link } from 'react-router-dom'
+// Landing.jsx
+import React from 'react';
+import './Landing.css'; // Asegúrate de que el archivo CSS esté importado correctamente
 
-export const Landing = () => {
+function Landing() {
   return (
-    <div className="landing">
-      <h1>Welcome to PokeAPI</h1>
-      <p>This is a PokeAPI project</p>
-      <Link to="/pokemon">Go to Pokemon</Link>
+    <div className="landing-container">
+      <h1>Bienvenido al PokeVerso</h1>
+      <p>¡Explora el increíble mundo de los Pokémon!</p>
     </div>
-  )
+  );
 }
+
+export default Landing;

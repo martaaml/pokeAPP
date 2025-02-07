@@ -1,33 +1,36 @@
-import { useState } from 'react'
-import './App.css'
-import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
-import { RutasPrivadas } from './RutasPrivadas'
-import {Login} from './Login'
-
-
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import './App.css';
+import { RutasPrivadas } from './RutasPrivadas';
+import { Login } from './components/Login/Login';
+import PokemonHangman from './components/Play/Play';
+import Pokedex from './components/Pokedex/Pokedex'; 
+import Error from './components/Error/Error';
+import Detalle from './components/Detalle/Detalle';
+import Landing from './components/Landing/Landing';  
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <BrowserRouter>
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/pokemon">Pokemon</Link>
-      <Link to="/login">Login</Link>
-    </nav>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/pokedex">Pokedex</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/play">Play</Link>
+      </nav>
     
-    <Routes>
-      <Route path="/Login" element={<Login />} />
-
-      
-      {/* Rutas privadas */}
-      <Route element={<RutasPrivadas />}>
-    { /* <Route path="/pokemon" element={<Pokemon />} /> */}
-   
-      </Route>
-    </Routes>
-  </BrowserRouter>
-  )
+      <Routes>
+        <Route path="/" element={<Landing />} /> 
+        <Route path="/login" element={<Login />} />
+        <Route path="/play" element={<PokemonHangman />} />
+        <Route path="/pokedex" element={<Pokedex />} /> 
+        <Route path="/error" element={<Error />} />
+        <Route path="/detalle/:id" element={<Detalle />} />
+ 
+        {/* Rutas privadas */}
+        <Route element={<RutasPrivadas />}>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
