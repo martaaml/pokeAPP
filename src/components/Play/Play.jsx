@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, orderBy, query } from 'firebase/firestore';
-import { db } from "../../firebase.js";  // Asegúrate de usar el nombre correcto
+import React, { useState, useEffect } from "react";
+import { collection, getDocs, addDoc, orderBy, query } from "firebase/firestore";
+import { db } from "../../firebase.js";
 
-import './Play.css';
+import "./Play.css";
 
 const API_URL = "https://pokeapi.co/api/v2/pokemon/";
 
@@ -14,39 +14,68 @@ const PokCrieAdivinanza = () => {
     const [message, setMessage] = useState("");
     const [ranking, setRanking] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [playerName, setPlayerName] = useState("");
 
     useEffect(() => {
         getRandomPokemon();
         fetchRanking();
+        getPlayerName();
     }, []);
 
-    const getRandomPokemon = async () => {
-        const randomId = Math.floor(Math.random() * 898) + 1;
-        const response = await fetch(`${API_URL}${randomId}`);
-        const data = await response.json();
-        setCurrentPokemon(data);
-        generateOptions(data);
-        setMessage("");
+    const getPlayerName = () => {
+        // Intentamos obtener el nombre del jugador desde localStorage
+        const storedName = localStorage.getItem("playerName");
+
+        if (storedName) {
+            // Si ya existe, usamos el nombre guardado
+            setPlayerName(storedName);
+        } else {
+            // Si no existe, pedimos el nombre
+            const newName = prompt("Ingresa tu nombre:");
+            if (newName) {
+                // Guardamos el nuevo nombre en localStorage
+                localStorage.setItem("playerName", newName);
+                setPlayerName(newName);
+            } else {
+                // Si no ingresa nada, asignamos un nombre por defecto
+                localStorage.setItem("playerName", "Jugador Anónimo");
+                setPlayerName("Jugador Anónimo");
+            }
+        }
     };
 
-    const generateOptions = async (correctPokemon) => {
+    const getRandomPokemon = () => {
+        const randomId = Math.floor(Math.random() * 898) + 1;
+        fetch(`${API_URL}${randomId}`)
+            .then(response => response.json())
+            .then(data => {
+                setCurrentPokemon(data);
+                generateOptions(data);
+                setMessage("");
+            });
+    };
+
+    const generateOptions = (correctPokemon) => {
         let names = new Set();
         let pokemons = [{ name: correctPokemon.name, image: correctPokemon.sprites.front_default }];
 
         names.add(correctPokemon.name);
 
-        while (names.size < 5) {
+        const fetchRandomPokemon = () => {
             const randomId = Math.floor(Math.random() * 898) + 1;
-            const response = await fetch(`${API_URL}${randomId}`);
-            const data = await response.json();
+            fetch(`${API_URL}${randomId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!names.has(data.name)) {
+                        names.add(data.name);
+                        pokemons.push({ name: data.name, image: data.sprites.front_default });
+                    }
+                    if (names.size < 5) fetchRandomPokemon();
+                    else setOptions(shuffleArray(pokemons));
+                });
+        };
 
-            if (!names.has(data.name)) {
-                names.add(data.name);
-                pokemons.push({ name: data.name, image: data.sprites.front_default });
-            }
-        }
-
-        setOptions(shuffleArray(pokemons));
+        fetchRandomPokemon();
     };
 
     const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
@@ -78,35 +107,29 @@ const PokCrieAdivinanza = () => {
         }
     };
 
-    const fetchRanking = async () => {
-        try {
-            const rankingRef = collection(db, "ranking");
-            const q = query(rankingRef, orderBy("score", "desc"));
-            const querySnapshot = await getDocs(q);
-            
+    const fetchRanking = () => {
+        const rankingRef = collection(db, "ranking");
+        const q = query(rankingRef, orderBy("score", "desc"));
+
+        getDocs(q).then(querySnapshot => {
             const rankingData = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
 
             setRanking(rankingData);
-        } catch (error) {
-            console.error("Error al obtener el ranking:", error);
-        }
+        }).catch(error => console.error("Error al obtener el ranking:", error));
     };
 
-    const saveScoreToDatabase = async (finalScore) => {
-        if (finalScore > 0) { // Evita guardar puntuaciones de 0
-            try {
-                await addDoc(collection(db, "ranking"), {
-                    name: "Jugador",
-                    score: finalScore,
-                    timestamp: new Date()
-                });
-                fetchRanking(); 
-            } catch (error) {
-                console.error("Error al guardar el score:", error);
-            }
+    const saveScoreToDatabase = (finalScore) => {
+        if (finalScore > 0) {
+            addDoc(collection(db, "ranking"), {
+                name: playerName || "Jugador Anónimo",
+                score: finalScore,
+                timestamp: new Date()
+            })
+            .then(() => fetchRanking())
+            .catch(error => console.error("Error al guardar el score:", error));
         }
     };
 
@@ -125,8 +148,9 @@ const PokCrieAdivinanza = () => {
         <div className="pokemon-container">
             <h1 className="title">Adivina el Pokémon</h1>
             <p className="score">Puntuación: {score}</p>
+            <p className="player-name">Jugador: {playerName}</p>
             <button onClick={playPokemonCry} className="sound-button">🔊 Escuchar Pokémon</button>
-            
+
             <div className="options-container">
                 {options.map((option) => (
                     <button 
@@ -162,7 +186,6 @@ const PokCrieAdivinanza = () => {
                 </ul>
             </div>
 
-            {/* Modal de Game Over */}
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
